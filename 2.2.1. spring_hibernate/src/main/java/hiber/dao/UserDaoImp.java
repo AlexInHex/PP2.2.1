@@ -5,7 +5,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.TypedQuery;
+import jakarta.persistence.TypedQuery;
 import java.util.List;
 
 @Repository
@@ -26,4 +26,10 @@ public class UserDaoImp implements UserDao {
       return query.getResultList();
    }
 
+   @Override
+   @SuppressWarnings("unchecked")
+   public List<User> listUsersWithCars() {
+      TypedQuery<User> query = sessionFactory.getCurrentSession().createQuery("select distinct u from User u left join fetch u.car");
+      return query.getResultList();
+   }
 }
