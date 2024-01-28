@@ -24,9 +24,6 @@ public class Car {
     @Column(name = "seria")
     private String seria;
 
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private User user;
 
     public Car() {}
 
