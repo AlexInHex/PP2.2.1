@@ -2,6 +2,7 @@ package hiber.dao;
 
 import hiber.model.Car;
 import hiber.model.User;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.Query;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,10 +43,15 @@ public class UserDaoImp implements UserDao {
 
    @Override
    public User getUserByCarModelAndSeria(String model, String seria) {
-      String hql = "FROM User u WHERE u.car.model = :model AND u.car.seria = :seria";
-      Query query = sessionFactory.getCurrentSession().createQuery(hql);
+      String hql = "SELECT u FROM User u LEFT JOIN FETCH u.car WHERE u.car.model = :model AND u.car.seria = :seria"; // жадный запрос
+      TypedQuery<User> query = sessionFactory.getCurrentSession().createQuery(hql, User.class);
       query.setParameter("model", model);
       query.setParameter("seria", seria);
-      return (User) query.getSingleResult();
+
+      try {
+         return query.getSingleResult();
+      } catch (NoResultException e) {
+         return null;
+      }
    }
 }
